@@ -23,9 +23,12 @@
 # }
 #
 class newrelic::server_monitoring(
-  $newrelic_license_key=undef,
-  $newrelic_loglevel='info',
-  $newrelic_logfile='/var/log/newrelic/nrsysmond.log'
+  $newrelic_license_key = undef,
+  $newrelic_loglevel = 'info',
+  $newrelic_logfile = '/var/log/newrelic/nrsysmond.log',
+  $package_ensure = present,
+  $service_enable = true,
+  $service_ensure = true
 ) {
 
   if $newrelic_license_key == undef {
@@ -37,11 +40,11 @@ class newrelic::server_monitoring(
   }
 
   package { 'newrelic-sysmond':
-    ensure  => present,
+    ensure  => $package_ensure,
   }
 
   file { '/etc/newrelic/nrsysmond.cfg':
-    ensure  => file,
+    ensure  => $package_ensure,
     owner   => root,
     group   => newrelic,
     mode    => '0640',
@@ -51,8 +54,8 @@ class newrelic::server_monitoring(
   }
 
   service { 'newrelic-sysmond':
-    ensure     => running,
-    enable     => true,
+    ensure     => $service_ensure,
+    enable     => $service_enable,
     hasstatus  => true,
     hasrestart => true,
     require    => Package['newrelic-sysmond'],

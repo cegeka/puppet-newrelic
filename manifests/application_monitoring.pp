@@ -77,18 +77,21 @@ define newrelic::application_monitoring(
   $newrelic_agent_loglevel='info',
   $newrelic_record_sql='obfuscated',
   $newrelic_use_ssl=false,
-  $newrelic_environments=[{ 'name' => 'production', 'values' => { '<<' => '*default_settings' } }]
+  $newrelic_environments=[{ 'name' => 'production', 'values' => { '<<' => '*default_settings' } }],
+  $package_ensure = present,
+  $service_enable = true,
+  $service_ensure = true
 ) {
 
-  if $newrelic_version == undef {
+  if ($package_ensure == 'present' and $newrelic_version == undef) {
     fail('The version of the New Relic agent must be provided')
   }
 
-  if $newrelic_app_root_dir == undef {
+  if ($package_ensure == 'present' and $newrelic_app_root_dir == undef) {
     fail('The root directory of the application server installation must be provided')
   }
 
-  if $newrelic_license_key == undef {
+  if ($package_ensure == 'present' and $newrelic_license_key == undef) {
     fail('The license key associated with your New Relic account must be provided')
   }
 
@@ -128,7 +131,7 @@ define newrelic::application_monitoring(
   }
 
   file { "${newrelic_app_root_dir}/newrelic/newrelic-${newrelic_version}.jar" :
-    ensure  => file,
+    ensure  => $package_ensure,
     owner   => $newrelic_app_owner,
     group   => $newrelic_app_group,
     source  => "puppet:///modules/${module_name}/newrelic-${newrelic_version}.jar",
@@ -140,7 +143,7 @@ define newrelic::application_monitoring(
     default:  { $newrelic_yaml_config_template = "${module_name}/application/newrelic.yml.erb" }
   }
   file { "${newrelic_app_root_dir}/newrelic/newrelic.yml" :
-    ensure  => file,
+    ensure  => $package_ensure,
     owner   => $newrelic_app_owner,
     group   => $newrelic_app_group,
     content => template($newrelic_yaml_config_template),
