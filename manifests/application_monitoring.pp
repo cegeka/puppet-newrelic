@@ -69,8 +69,6 @@
 #
 define newrelic::application_monitoring(
   $ensure = present,
-  $service_enable = true,
-  $service_ensure = true,
   $newrelic_version=undef,
   $newrelic_app_root_dir=undef,
   $newrelic_app_owner='root',
@@ -103,6 +101,11 @@ define newrelic::application_monitoring(
     fail("${newrelic_record_sql} is not one of valid predefined values for record sql")
   }
 
+  if $ensure == absent {
+    $directory_ensure = absent
+  }else{
+    $directory_ensure = directory
+  }
   case $newrelic_use_ssl {
     true, false: { $newrelic_use_ssl_real = $newrelic_use_ssl }
     default: {
@@ -111,13 +114,13 @@ define newrelic::application_monitoring(
   }
 
   file { "${newrelic_app_root_dir}/newrelic" :
-    ensure => directory,
+    ensure => $directory_ensure,
     owner  => $newrelic_app_owner,
     group  => $newrelic_app_group,
   }
 
   file { "${newrelic_app_root_dir}/newrelic/logs" :
-    ensure  => directory,
+    ensure  => $directory_ensure,
     owner   => $newrelic_app_owner,
     group   => $newrelic_app_group,
     require => File["${newrelic_app_root_dir}/newrelic"],

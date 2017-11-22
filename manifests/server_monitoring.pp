@@ -31,7 +31,7 @@ class newrelic::server_monitoring(
   $newrelic_logfile = '/var/log/newrelic/nrsysmond.log'
 ) {
 
-  if $newrelic_license_key == undef {
+  if ($ensure == present and $newrelic_license_key == undef) {
     fail('The license key associated with your New Relic account must be provided')
   }
 
