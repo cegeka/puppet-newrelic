@@ -25,7 +25,7 @@
 class newrelic::server_monitoring(
   $ensure = present,
   $service_enable = true,
-  $service_ensure = true,
+  $service_ensure = running,
   $newrelic_license_key = undef,
   $newrelic_loglevel = 'info',
   $newrelic_logfile = '/var/log/newrelic/nrsysmond.log'
