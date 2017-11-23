@@ -127,7 +127,7 @@ define newrelic::application_monitoring(
   }
 
   file { "${newrelic_app_root_dir}/newrelic/extensions" :
-    ensure  => directory,
+    ensure  => $directory_ensure,
     owner   => $newrelic_app_owner,
     group   => $newrelic_app_group,
     require => File["${newrelic_app_root_dir}/newrelic"],
