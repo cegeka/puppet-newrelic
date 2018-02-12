@@ -143,6 +143,7 @@ define newrelic::application_monitoring(
 
   case $newrelic_version {
     '3.40.0': { $newrelic_yaml_config_template = "${module_name}/application/newrelic.yml.3.40.0.erb" }
+    '3.42.0': { $newrelic_yaml_config_template = "${module_name}/application/newrelic.yml.3.42.0.erb" }
     default:  { $newrelic_yaml_config_template = "${module_name}/application/newrelic.yml.erb" }
   }
   file { "${newrelic_app_root_dir}/newrelic/newrelic.yml" :
